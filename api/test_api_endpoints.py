@@ -1,5 +1,12 @@
-import pytest
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from main import app
+from weather import WeatherService
+import pytest
+
+# Rest of your test code remains the same
 
 @pytest.fixture
 def client():
@@ -8,7 +15,7 @@ def client():
         yield client
 
 def test_weather_endpoint_success(client, mocker):
-    mocker.patch('src.api.weather_service.WeatherService.get_weather', return_value={
+    mocker.patch('api.weather_service.WeatherService.get_weather', return_value={
         "name": "London",
         "main": {"temp": 15.0},
         "weather": [{"description": "clear sky"}]
@@ -19,7 +26,7 @@ def test_weather_endpoint_success(client, mocker):
     assert response.json['temperature'] == 15.0
 
 def test_weather_endpoint_failure(client, mocker):
-    mocker.patch('src.api.weather_service.WeatherService.get_weather', return_value={"error": "API Error"})
+    mocker.patch('api.weather_service.WeatherService.get_weather', return_value={"error": "API Error"})
     response = client.get('/weather/InvalidCity')
     assert response.status_code == 500
     assert "error" in response.json
