@@ -34,9 +34,11 @@ jobs:
       id: unit_tests
       run: |
         cd api
-        pytest test_api_endpoints.py --cov=. --cov-report=xml
+        python -m pytest test_api_endpoints.py --cov=. --cov-report=xml
       env:
         OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+        PYTHONPATH: ${{ github.workspace }}
+                                         
 
     - name: Run performance tests
       id: performance_tests
