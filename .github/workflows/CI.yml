@@ -57,8 +57,8 @@ jobs:
         subject: "CI ${{ job.status }}: Weather API (Branch: ${{ github.ref_name }})"
         to: ${{ secrets.NOTIFICATION_EMAIL }}
         html_body: |
-          <h2 style="color: ${{ job.status == 'success' ? '#2ecc71' : '#e74c3c' }};">
-            Weather API CI: ${{ job.status == 'success' ? '✅ PASSED' : '❌ FAILED' }}
+          <h2 style="color: ${{ job.status == 'success' && '#2ecc71' || '#e74c3c' }};">
+            Weather API CI: ${{ job.status == 'success' && '✅ PASSED' || '❌ FAILED' }}
           </h2>
           
           <p><strong>📌 Repository:</strong> ${{ github.repository }}</p>
@@ -66,11 +66,7 @@ jobs:
           <p><strong>🌿 Branch:</strong> ${{ github.ref_name }}</p>
           <p><strong>🧑‍💻 Triggered by:</strong> ${{ github.actor }}</p>
           
-          {{ if github.event_name == 'pull_request' }}
-          <p><strong>🔀 Pull Request:</strong> #${{ github.event.pull_request.number }}</p>
-          {{ else }}
-          <p><strong>💾 Commit:</strong> <code>${{ github.sha }}</code></p>
-          {{ endif }}
+          ${{ github.event_name == 'pull_request' && '<p><strong>🔀 Pull Request:</strong> #' + github.event.pull_request.number + '</p>' || '<p><strong>💾 Commit:</strong> <code>' + github.sha + '</code></p>' }}
           
           <h3>Test Coverage</h3>
           <p><a href="https://codecov.io/gh/${{ github.repository }}/commit/${{ github.sha }}">View Coverage Report</a></p>
