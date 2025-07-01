@@ -1,12 +1,14 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from main import app
-from weather import WeatherService
 import pytest
+from flask import Flask
 
-# Rest of your test code remains the same
+# Add project root to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Import using consistent paths
+from api.main import app
+from api.weather import WeatherService
 
 @pytest.fixture
 def client():
@@ -15,7 +17,8 @@ def client():
         yield client
 
 def test_weather_endpoint_success(client, mocker):
-    mocker.patch('api.weather_service.WeatherService.get_weather', return_value={
+    # Corrected mock path to match actual import
+    mocker.patch('api.weather.WeatherService.get_weather', return_value={
         "name": "London",
         "main": {"temp": 15.0},
         "weather": [{"description": "clear sky"}]
@@ -26,7 +29,8 @@ def test_weather_endpoint_success(client, mocker):
     assert response.json['temperature'] == 15.0
 
 def test_weather_endpoint_failure(client, mocker):
-    mocker.patch('api.weather_service.WeatherService.get_weather', return_value={"error": "API Error"})
+    # Corrected mock path to match actual import
+    mocker.patch('api.weather.WeatherService.get_weather', return_value={"error": "API Error"})
     response = client.get('/weather/InvalidCity')
     assert response.status_code == 500
     assert "error" in response.json
