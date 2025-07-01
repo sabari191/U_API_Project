@@ -20,13 +20,13 @@ def test_weather_endpoint_success(client, mocker):
     # Corrected mock path to match actual import
     mocker.patch('api.weather.WeatherService.get_weather', return_value={
         "name": "London",
-        "main": {"temp": 15.0},
+        "main": {"temp": 28.66},
         "weather": [{"description": "clear sky"}]
     })
     response = client.get('/weather/London')
     assert response.status_code == 200
     assert response.json['city'] == "London"
-    assert response.json['temperature'] == 15.0
+    assert response.json['temperature'] == 28.66
 
 def test_weather_endpoint_failure(client, mocker):
     # Corrected mock path to match actual import
