@@ -33,7 +33,7 @@ jobs:
     - name: Run unit tests with coverage
       run: |
         cd api
-        pytest test.api_endpoints.py --cov=. --cov-report=xml
+        pytest test.test_api_endpoints.py --cov=. --cov-report=xml
       env:
         OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
 
