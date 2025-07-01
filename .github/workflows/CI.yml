@@ -31,6 +31,7 @@ jobs:
         pip install pytest pytest-cov locust
 
     - name: Run unit tests with coverage
+      id: unit_tests
       run: |
         cd api
         pytest test_api_endpoints.py --cov=. --cov-report=xml
@@ -38,6 +39,7 @@ jobs:
         OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
 
     - name: Run performance tests
+      id: performance_tests
       run: |
         cd api
         locust -f test_performance.py --headless -u 50 -r 10 --run-time 1m --host=http://localhost:5000
@@ -56,6 +58,7 @@ jobs:
         username: ${{ secrets.GMAIL_USERNAME }}
         password: ${{ secrets.GMAIL_APP_PASSWORD }}
         subject: "CI ${{ job.status }}: Weather API"
+        from: GitHub Actions <${{ secrets.GMAIL_USERNAME }}>
         to: ${{ secrets.NOTIFICATION_EMAIL }}
         body: |
           Weather API CI Pipeline Results
@@ -71,7 +74,7 @@ jobs:
           - Triggered by: ${{ github.actor }}
           - Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           
-          Test Summary:
+          Test Results:
           - Unit tests: ${{ steps.unit_tests.outcome }}
           - Performance tests: ${{ steps.performance_tests.outcome }}
           
