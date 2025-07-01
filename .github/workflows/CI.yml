@@ -33,7 +33,7 @@ jobs:
     - name: Run unit tests with coverage
       run: |
         cd api
-        pytest test.test_api_endpoints.py --cov=. --cov-report=xml
+        pytest test_api_endpoints.py --cov=. --cov-report=xml
       env:
         OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
 
@@ -51,15 +51,28 @@ jobs:
       uses: dawidd6/action-send-mail@v3
       with:
         server_address: smtp.gmail.com
-        server_port: 465
+        server_port: 587
+        secure: true
         username: ${{ secrets.GMAIL_USERNAME }}
         password: ${{ secrets.GMAIL_APP_PASSWORD }}
         subject: "CI ${{ job.status }}: Weather API"
         to: ${{ secrets.NOTIFICATION_EMAIL }}
         body: |
-          CI Pipeline Status: ${{ job.status }}
+          Weather API CI Pipeline Results
+          ==============================
           
-          Repository: ${{ github.repository }}
-          Workflow Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          Branch: ${{ github.ref_name }}
-          Triggered by: ${{ github.actor }}
+          Status: ${{ job.status }}
+          Workflow: ${{ github.workflow }}
+          Run Number: ${{ github.run_number }}
+          
+          Details:
+          - Repository: ${{ github.repository }}
+          - Branch: ${{ github.ref_name }}
+          - Triggered by: ${{ github.actor }}
+          - Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          
+          Test Summary:
+          - Unit tests: ${{ steps.unit_tests.outcome }}
+          - Performance tests: ${{ steps.performance_tests.outcome }}
+          
+          View complete logs for details.
