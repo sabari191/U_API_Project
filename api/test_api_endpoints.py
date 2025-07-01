@@ -1,0 +1,29 @@
+import pytest
+from main import app
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        yield client
+
+def test_weather_endpoint_success(client, mocker):
+    mocker.patch('src.api.weather_service.WeatherService.get_weather', return_value={
+        "name": "London",
+        "main": {"temp": 15.0},
+        "weather": [{"description": "clear sky"}]
+    })
+    response = client.get('/weather/London')
+    assert response.status_code == 200
+    assert response.json['city'] == "London"
+    assert response.json['temperature'] == 15.0
+
+def test_weather_endpoint_failure(client, mocker):
+    mocker.patch('src.api.weather_service.WeatherService.get_weather', return_value={"error": "API Error"})
+    response = client.get('/weather/InvalidCity')
+    assert response.status_code == 500
+    assert "error" in response.json
+
+def pytest_terminal_summary(terminalreporter, exitstatus, config):
+    if exitstatus == 0:
+        print("\nAll tests passed successfully! The weather API endpoints are functioning as expected.")
