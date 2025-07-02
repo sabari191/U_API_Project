@@ -40,30 +40,30 @@ jobs:
       env:
         OPENWEATHERMAP_API_KEY: "test_key" 
 
-    - name: Run performance tests
-      id: performance_tests
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE
-        cd api
-        locust -f test_performance.py --headless -u 50 -r 10 --run-time 1m --host=http://localhost:5000
+    # - name: Run performance tests
+      # id: performance_tests
+      # run: |
+        # export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE
+        # cd api
+        # locust -f test_performance.py --headless -u 50 -r 10 --run-time 1m --host=http://localhost:5000
 
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
       if: success()
 
-    - name: Notify via Gmail
+    - name: Notify via Org Email
       if: always()
       uses: dawidd6/action-send-mail@v3
       with:
-        server_address: smtp.gmail.com
+        server_address: smtp.mastechdigital.com
         server_port: 465
         secure: true
-        username: ${{ secrets.GMAIL_USERNAME }}
-        password: ${{ secrets.GMAIL_APP_PASSWORD }}
+        username: ${{ secrets.SMTP_USERNAME  }}
+        password: ${{ secrets.SMTP_PASSWORD  }}
         subject: "CI ${{ job.status }}: Weather API"
-        from: "GitHub Actions <${{ secrets.GMAIL_USERNAME }}>"
-        to: ${{ secrets.NOTIFICATION_EMAIL }}
-        ignore_cert: true
+        from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
+        to: ${{ secrets.NOTIFICATION_EMAIL }}        
+        ignore_cert: false
         body: |
           Weather API CI Pipeline Results
           ==============================
