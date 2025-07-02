@@ -38,32 +38,32 @@ jobs:
         cd api
         python -m pytest test_api_endpoints.py --cov=. --cov-report=xml
       env:
-        OPENWEATHERMAP_API_KEY: "test_key" 
-        
-      # Notification after unit_tests
-      - name: Notify unit_tests Completion
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.office365.com
-          server_port: 587
-          username: ${{ secrets.SMTP_USER }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          from: ${{ secrets.SMTP_USER }}
-          to: ${{ secrets.NOTIFICATION_EMAIL }}  # Your configured email
-          subject: "✅ unit_tests Complete"
-          body: |
-            Step: unit_tests
-            Status: ${{ steps.unit_tests.outcome }}
-            Repository: ${{ github.repository }}
-            Branch: ${{ github.ref }}
-            
-    # - name: Run performance tests
-      # id: performance_tests
-      # run: |
-        # export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE
-        # cd api
-        # locust -f test_performance.py --headless -u 50 -r 10 --run-time 1m --host=http://localhost:5000
+        OPENWEATHERMAP_API_KEY: "test_key"
+
+    # Notification after unit_tests
+    - name: Notify unit_tests Completion
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.office365.com
+        server_port: 587
+        username: ${{ secrets.SMTP_USER }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        from: ${{ secrets.SMTP_USER }}
+        to: ${{ secrets.NOTIFICATION_EMAIL }}
+        subject: "✅ unit_tests Complete"
+        body: |
+          Step: unit_tests
+          Status: ${{ steps.unit_tests.outcome }}
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref }}
+
+    - name: Run performance tests
+      id: performance_tests
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE
+        cd api
+        locust -f test_performance.py --headless -u 50 -r 10 --run-time 1m --host=http://localhost:5000
 
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
@@ -76,11 +76,11 @@ jobs:
         server_address: smtp.office365.com
         server_port: 587
         secure: false
-        username: ${{ secrets.SMTP_USERNAME  }}
-        password: ${{ secrets.SMTP_PASSWORD  }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
         subject: "CI ${{ job.status }}: Weather API"
         from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
-        to: ${{ secrets.NOTIFICATION_EMAIL }}        
+        to: ${{ secrets.NOTIFICATION_EMAIL }}
         ignore_cert: true
         body: |
           Weather API CI Pipeline Results
