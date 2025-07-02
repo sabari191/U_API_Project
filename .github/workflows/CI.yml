@@ -47,9 +47,11 @@ jobs:
       with:
         server_address: smtp.office365.com
         server_port: 587
+        secure: false
+        ignore_cert: true
         username: ${{ secrets.SMTP_USER }}
         password: ${{ secrets.SMTP_PASSWORD }}
-        from: ${{ secrets.SMTP_USER }}
+        from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
         to: ${{ secrets.NOTIFICATION_EMAIL }}
         subject: "✅ unit_tests Complete"
         body: |
