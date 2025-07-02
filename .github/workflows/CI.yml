@@ -55,7 +55,7 @@ jobs:
       if: always()
       uses: dawidd6/action-send-mail@v3
       with:
-        server_address: smtp.mastechdigital.com
+        server_address: No Reply
         server_port: 465
         secure: true
         username: ${{ secrets.SMTP_USERNAME  }}
