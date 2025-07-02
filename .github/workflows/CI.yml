@@ -57,13 +57,13 @@ jobs:
       with:
         server_address: smtp.office365.com
         server_port: 587
-        secure: true
+        secure: false
         username: ${{ secrets.SMTP_USERNAME  }}
         password: ${{ secrets.SMTP_PASSWORD  }}
         subject: "CI ${{ job.status }}: Weather API"
         from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
         to: ${{ secrets.NOTIFICATION_EMAIL }}        
-        ignore_cert: false
+        ignore_cert: true
         body: |
           Weather API CI Pipeline Results
           ==============================
